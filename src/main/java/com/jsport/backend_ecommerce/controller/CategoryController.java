@@ -1,7 +1,7 @@
 package com.jsport.backend_ecommerce.controller;
 
 import com.jsport.backend_ecommerce.entity.Category;
-import com.jsport.backend_ecommerce.repository.CategoryRepository;
+import com.jsport.backend_ecommerce.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,32 +12,36 @@ import java.util.List;
 @RequestMapping("/api/categories")
 @CrossOrigin(origins = "*")
 public class CategoryController {
-    @Autowired
-    private CategoryRepository categoryRepository;
 
-    // 1. Metodo Get definido para obtener todas las categorías
+    @Autowired
+    private CategoryService categoryService;
+
+    // 1. Obtener todas las categorías
     @GetMapping
     public List<Category> getAllCategories(){
-        return categoryRepository.findAll();
+        // Usamos el servicio en lugar del repositorio directamente para mantener el orden
+        return categoryService.getAllCategories();
     }
 
     // 2. Crear una nueva categoría
     @PostMapping
     public Category createCategory(@RequestBody Category category) {
-        return categoryRepository.save(category);
+        return categoryService.saveCategory(category);
     }
 
-    // ACTUALIZAR CATEGORÍA
+    // 3. ACTUALIZAR CATEGORÍA
     @PutMapping("/{id}")
     public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category categoryDetails) {
-        Category updatedCategory = categoryService.update(id, categoryDetails);
+        // Asegúrate de que el nombre del método coincida con el del Service (updateCategory)
+        Category updatedCategory = categoryService.updateCategory(id, categoryDetails);
         return ResponseEntity.ok(updatedCategory);
     }
 
-    // ELIMINAR CATEGORÍA
+    // 4. ELIMINAR CATEGORÍA
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
-        categoryService.delete(id);
+        // Asegúrate de que el nombre del método coincida con el del Service (deleteCategory)
+        categoryService.deleteCategory(id);
         return ResponseEntity.noContent().build();
     }
 }
