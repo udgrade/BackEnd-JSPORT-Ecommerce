@@ -32,4 +32,8 @@ public class Product {
     private Category category;
 
     private boolean active = true;
+
+    @Column(nullable = false)
+    private Integer stock;
+
 }

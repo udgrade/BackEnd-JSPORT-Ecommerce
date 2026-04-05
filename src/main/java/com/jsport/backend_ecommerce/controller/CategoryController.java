@@ -2,8 +2,8 @@ package com.jsport.backend_ecommerce.controller;
 
 import com.jsport.backend_ecommerce.entity.Category;
 import com.jsport.backend_ecommerce.repository.CategoryRepository;
-import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,5 +25,19 @@ public class CategoryController {
     @PostMapping
     public Category createCategory(@RequestBody Category category) {
         return categoryRepository.save(category);
+    }
+
+    // ACTUALIZAR CATEGORÍA
+    @PutMapping("/{id}")
+    public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category categoryDetails) {
+        Category updatedCategory = categoryService.update(id, categoryDetails);
+        return ResponseEntity.ok(updatedCategory);
+    }
+
+    // ELIMINAR CATEGORÍA
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+        categoryService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
