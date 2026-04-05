@@ -24,10 +24,15 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
+        // 1. Autenticación
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
+
+        // 2. Generar el token
         String token = jwtService.generateToken(request.getEmail());
+
+        // 3. Devolver el objeto AuthResponse envuelto en un ResponseEntity
         return ResponseEntity.ok(new AuthResponse(token));
     }
 }
