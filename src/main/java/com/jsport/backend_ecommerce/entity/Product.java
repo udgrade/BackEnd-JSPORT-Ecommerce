@@ -1,9 +1,10 @@
 package com.jsport.backend_ecommerce.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference; // IMPORTANTE
 import jakarta.persistence.*;
 import lombok.Data;
-
 import java.math.BigDecimal;
+import java.util.List; // IMPORTANTE
 
 @Entity
 @Table(name = "products", schema = "\"JSPORT\"")
@@ -20,14 +21,14 @@ public class Product {
     private String description;
 
     @Column(nullable = false)
-    private BigDecimal base_price; // Usamos BigDecimal para dinero (pesos colombianos)
+    private BigDecimal base_price;
 
     @Column(nullable = false)
-    private BigDecimal price; // Usamos BigDecimal para dinero (pesos colombianos)
+    private BigDecimal price;
 
-    private String brand; // Marca (ejemplo: Nike, Adidas)
+    private String brand;
 
-    @ManyToOne // Foranea: Muchos productos pertenecen a una categoría
+    @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
@@ -36,4 +37,8 @@ public class Product {
     @Column(nullable = false)
     private Integer stock;
 
+    // --- NUEVA CONEXIÓN A LAS IMÁGENES ---
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference // Indica que Product es el "dueño" de la relación en el JSON
+    private List<ImageProducts> images;
 }

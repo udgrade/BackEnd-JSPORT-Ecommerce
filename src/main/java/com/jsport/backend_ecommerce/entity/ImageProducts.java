@@ -1,5 +1,6 @@
 package com.jsport.backend_ecommerce.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference; // IMPORTANTE
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -16,10 +17,11 @@ public class ImageProducts {
     private String url;
 
     @Column(name = "is_primary")
-    @JsonProperty("isPrimary") // <--- ESTO FUERZA LA UNIÓN
+    @JsonProperty("isPrimary")
     private boolean isPrimary;
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
+    @JsonBackReference // Corta la recursión infinita hacia atrás
     private Product product;
 }
