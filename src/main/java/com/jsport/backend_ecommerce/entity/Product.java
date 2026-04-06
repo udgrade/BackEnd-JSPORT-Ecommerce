@@ -1,10 +1,11 @@
 package com.jsport.backend_ecommerce.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference; // IMPORTANTE
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.math.BigDecimal;
-import java.util.List; // IMPORTANTE
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "products", schema = "\"JSPORT\"")
@@ -37,8 +38,8 @@ public class Product {
     @Column(nullable = false)
     private Integer stock;
 
-    // --- NUEVA CONEXIÓN A LAS IMÁGENES ---
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonManagedReference // Indica que Product es el "dueño" de la relación en el JSON
-    private List<ImageProducts> images;
+    // cascade = ALL + orphanRemoval = true es lo que permite que al quitar una imagen de la lista, se borre de la DB.
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private List<ImageProducts> images = new ArrayList<>();
 }

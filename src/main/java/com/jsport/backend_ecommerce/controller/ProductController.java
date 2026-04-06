@@ -1,8 +1,9 @@
 package com.jsport.backend_ecommerce.controller;
 
 import com.jsport.backend_ecommerce.entity.Product;
-import com.jsport.backend_ecommerce.repository.ProductRepository;
+import com.jsport.backend_ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,30 +12,35 @@ import java.util.List;
 @RequestMapping("/api/products")
 @CrossOrigin(origins = "*")
 public class ProductController {
-    @Autowired
-    private ProductRepository productRepository;
 
-    //Metodo que obtiene todos los productos:
+    @Autowired
+    private ProductService productService;
+
     @GetMapping
     public List<Product> getAllProducts(){
-        return productRepository.findAll();
+        return productService.getAllProducts();
     }
 
-    //Metodo que se encarga de crear un producto:
     @PostMapping
     public Product createProduct(@RequestBody Product product){
-        return productRepository.save(product);
+        return productService.saveProduct(product);
     }
 
-    //Metodo que se encarga de buscar algun producto por marca:
+    @PutMapping("/{id}")
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
+        return ResponseEntity.ok(productService.updateProduct(id, product));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/brand/{brand}")
     public List<Product> getProductsByBrand(@PathVariable String brand){
-        return productRepository.findByBrand(brand);
-    }
-
-    //Metodo que se encarga de buscar algun producto por id de categoria haciendo alusion a su llave foranea
-    @GetMapping("/category/{category}")
-    public List<Product> getProductByCategories(@PathVariable Long category){
-        return productRepository.findByCategoryId(category);
+        return productService.getAllProducts().stream()
+                .filter(p -> p.getBrand().equalsIgnoreCase(brand))
+                .toList();
     }
 }
